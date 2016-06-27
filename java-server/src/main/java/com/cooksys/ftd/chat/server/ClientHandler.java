@@ -13,8 +13,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//only echo your own messages...so far
-
 public class ClientHandler implements Runnable, Closeable {
 	
 	Logger log = LoggerFactory.getLogger(ClientHandler.class);
@@ -22,7 +20,6 @@ public class ClientHandler implements Runnable, Closeable {
 	private Socket client;
 	private PrintWriter writer;
 	private BufferedReader reader;
-
 
 	public ClientHandler(Socket client, Map<ClientHandler, Thread> handlerThreads) throws IOException {
 		super();
@@ -41,19 +38,21 @@ public class ClientHandler implements Runnable, Closeable {
 	public void run() {
 		try {
 			log.info("handling client {}", this.client.getRemoteSocketAddress());
-			//String username = "";
 			while (!this.client.isClosed()) {
-				//echo is basically what the client puts into the chat
-			/*	if (username == "") {
-					username = reader.readLine();
-				}*/
-				String echo = /*username + ": " +*/ reader.readLine();
-				log.info("received message [{}] from client {}, echoing...", echo,
+				String echo = reader.readLine();
+				// "reader.readLine" receives the message sent by JavaScript's "server.write()"
+				log.info("received message [{}] from client {}", echo,
 						this.client.getRemoteSocketAddress());
-				Server.getMessages().setMesses(echo);
-				Server.getMessages().broadcast();
-				writer.flush();
+				if(echo == "disconnect") {
+					log.info("caught command 'disconnect'");
+					this.close();
+				} else {
+					Server.getMessages().setMesses(echo);
+					Server.getMessages().broadcast();
+					writer.flush();
+				}
 			}
+			log.info("Client {} closed.", this.client.getRemoteSocketAddress());
 			this.close();
 		} catch (IOException e) {
 			log.error("Handler fail! oh noes :(", e);

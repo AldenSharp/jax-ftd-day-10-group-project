@@ -35,9 +35,8 @@ public class Messages {
 		String message = messes.removeFirst();
 		for(ClientHandler client : Server.getHandlerThreads().keySet()) {
 			client.sendMessage(message);
-			log.info("Broadcast message: {}", message);
+			log.info("broadcast message [{}]", message);
 		}
-		log.info("Broadcast method");
 	}
 	
 	
