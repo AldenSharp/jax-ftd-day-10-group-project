@@ -15,7 +15,7 @@ public class Messages {
 	private Deque<String> messes = new ArrayDeque<String>();
 	private static Map<ClientHandler, Thread> handlerThreads = new ConcurrentHashMap<>();
 	
-	public Messages(Map<ClientHandler, Thread> handlerThreads) {
+	public Messages() {
 		
 	}
 	

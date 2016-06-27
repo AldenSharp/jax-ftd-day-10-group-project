@@ -16,13 +16,12 @@ import org.slf4j.LoggerFactory;
 //only echo your own messages...so far
 
 public class ClientHandler implements Runnable, Closeable {
-
+	
 	Logger log = LoggerFactory.getLogger(ClientHandler.class);
 
 	private Socket client;
 	private PrintWriter writer;
 	private BufferedReader reader;
-	private Messages threadMessages = new Messages(null);
 
 
 	public ClientHandler(Socket client, Map<ClientHandler, Thread> handlerThreads) throws IOException {
@@ -34,7 +33,6 @@ public class ClientHandler implements Runnable, Closeable {
 	}
 	
 	void sendMessage(String message) {
-		log.debug("Sending message");
 		writer.print(message);
 		writer.flush();
 	}
@@ -52,8 +50,8 @@ public class ClientHandler implements Runnable, Closeable {
 				String echo = /*username + ": " +*/ reader.readLine();
 				log.info("received message [{}] from client {}, echoing...", echo,
 						this.client.getRemoteSocketAddress());
-
-				threadMessages.setMesses(echo);
+				Server.getMessages().setMesses(echo);
+				Server.getMessages().broadcast();
 				writer.flush();
 			}
 			this.close();
