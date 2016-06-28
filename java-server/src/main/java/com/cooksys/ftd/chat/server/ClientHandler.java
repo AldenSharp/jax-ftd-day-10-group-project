@@ -41,9 +41,8 @@ public class ClientHandler implements Runnable, Closeable {
 			while (!this.client.isClosed()) {
 				String echo = reader.readLine();
 				// "reader.readLine" receives the message sent by JavaScript's "server.write()"
-				log.info("received message [{}] from client {}", echo,
-						this.client.getRemoteSocketAddress());
-				if(echo == "disconnect") {
+				log.info("received message [{}] from client {}", echo, this.client.getRemoteSocketAddress());
+				if("disconnect".equalsIgnoreCase(echo)) {
 					log.info("caught command 'disconnect'");
 					this.close();
 				} else {
@@ -53,7 +52,6 @@ public class ClientHandler implements Runnable, Closeable {
 				}
 			}
 			log.info("Client {} closed.", this.client.getRemoteSocketAddress());
-			this.close();
 		} catch (IOException e) {
 			log.error("Handler fail! oh noes :(", e);
 		}

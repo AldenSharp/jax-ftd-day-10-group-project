@@ -63,7 +63,7 @@ cli
     if (command === 'disconnect') {
       server.write(`${getDate()} - ${username} has left.\n`)
       server.write('disconnect\n')
-      server.end()
+      cli.exec('exit')
       callback()
     } else if (command.startsWith('setname ')) {
       let output = `${getDate()} - ${username}`
